@@ -29,6 +29,11 @@ Vector vector_sub(Vector a, Vector b) {
 }
 
 double* check_intersect(Ray v, Entity entity) {
+    /* Check if a ray intersects a given entity
+     * Args:
+     *      v (Ray): Ray to check for intersects
+     *      entity (Entity): Entity to check for intersect
+     */
     if(entity.id == 1) {  // Check intersect with sphere
         /* Ray Sphere Intersect:
          * cx, cy, cz               = sphere coordinates
@@ -39,11 +44,6 @@ double* check_intersect(Ray v, Entity entity) {
          * disc = b^2 - 4 * a * c
          * t    = (-b +- sqrt(disc)) / 2 * a
          */
-        //double magnitude = sqrt(v.x1 + v.y1 + v.z1);  // Get the magnitude of the view ray
-        //v.x1 = v.x1 / magnitude;
-        //v.y1 = v.y1 / magnitude;
-        //v.z1 = v.z1 / magnitude;
-
         double a = pow(v.x1, 2) + pow(v.y1, 2) + pow(v.z1, 2);
         double b = 2 * (v.x1 * (v.x0 - entity.x) + v.y1 * (v.y0 - entity.y) + v.z1 * (v.z0 - entity.z));
         double c = pow(v.x0 - entity.x, 2) + pow(v.y0 - entity.y, 2) + pow(v.z0 - entity.z, 2) - pow(entity.attributes.radius, 2);
