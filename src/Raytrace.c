@@ -28,4 +28,81 @@ Vector vector_sub(Vector a, Vector b) {
     return c;
 }
 
+double* check_intersect(Ray v, Entity entity) {
+    if(entity.id == 1) {  // Check intersect with sphere
+        /* Ray Sphere Intersect:
+         * cx, cy, cz               = sphere coordinates
+         * x0, y0, z0 -> x1, y1, z1 = ray
+         * a    = x1^2 + y1^2 + z1^2
+         * b    = 2 * (x1 * (x0 - cx) + y1 * (y0 - cy) + z1 * (z0 - cz))
+         * c    = (x0 - cx)^2 + (y0 - cy)^2 + (z0 - cz)^2 - r^2
+         * disc = b^2 - 4 * a * c
+         * t    = (-b +- sqrt(disc)) / 2 * a
+         */
+        //double magnitude = sqrt(v.x1 + v.y1 + v.z1);  // Get the magnitude of the view ray
+        //v.x1 = v.x1 / magnitude;
+        //v.y1 = v.y1 / magnitude;
+        //v.z1 = v.z1 / magnitude;
+
+        double a = pow(v.x1, 2) + pow(v.y1, 2) + pow(v.z1, 2);
+        double b = 2 * (v.x1 * (v.x0 - entity.x) + v.y1 * (v.y0 - entity.y) + v.z1 * (v.z0 - entity.z));
+        double c = pow(v.x0 - entity.x, 2) + pow(v.y0 - entity.y, 2) + pow(v.z0 - entity.z, 2) - pow(entity.attributes.radius, 2);
+
+        double disc = pow(b, 2) - 4 * a * c;
+        if(disc < 0) {
+            return NULL;
+        } else {
+            double t = (-b - sqrt(disc)) / (2 * a);
+            double t2 = (-b + sqrt(disc)) / (2 * a);
+            if(t2 < t || t <= 0) t = t2;
+
+            double *intersect = malloc(sizeof(double) * 4);
+            intersect[0] = v.x0 + v.x1 * t;
+            intersect[1] = v.y0 + v.y1 * t;
+            intersect[2] = v.z0 + v.y1 * t;
+            intersect[3] = t;
+            return intersect;
+        }
+
+    } else if(entity.id == 2) {  // check intersect with plane
+        /* Ray Plane Intersect:
+         * x0, y0, z0 -> x1, y1, z1    = ray
+         * 0 = A*x + B*y + C*z + D     = plane equation
+         * <A, B, C>                   = plane normal
+         * D                           = distance from plane to origin
+         * D  = -1(Ax + By + Cz)
+         * v0 = (A*x1 + B*y1 + C*z1)
+         * vD = -(A*x0 + B*y0 + C*z0 + D) 
+         */
+        Vector coords;
+        coords.x = entity.x;
+        coords.y = entity.y;
+        coords.z = entity.z;
+
+        Vector eyes;
+        eyes.x = v.x0;
+        eyes.y = v.y0;
+        eyes.z = v.z0;
+
+        Vector screen;
+        screen.x = v.x1;
+        screen.y = v.y1;
+        screen.z = v.z1;
+
+        double t = -1 * dot_product(entity.attributes.normal, (vector_sub(eyes, coords))) / dot_product(entity.attributes.normal, screen); 
+       
+        if(t <= 0) return NULL;  // The plane is behind the ray, no intersect
+        
+        double *intersect = malloc(sizeof(double) * 4);
+        intersect[0] = v.x0 + (v.x1 * t);
+        intersect[1] = v.y0 + (v.y1 * t);
+        intersect[2] = v.z0 + (v.y1 * t);
+        intersect[3] = t;
+        return intersect;
+
+
+    } else {  // If the ID isn't for a shape, skip it
+        return NULL;
+    }
+}
 
