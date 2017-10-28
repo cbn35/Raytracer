@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include "Raytrace.c"
 
 // Struct for holding color RGB values
 typedef struct {
