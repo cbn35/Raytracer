@@ -4,6 +4,12 @@
  */
 
 Entity parse_line(char *line) {
+    /* Parse a line from a CSV file
+     * 
+     * Args:
+     *      line (char*): null-terminated string from a CSV file
+     * Returns (Entity): Entity struct with the neede data
+     */
     char entityType[BUFFER_SIZE];      // Allocate some space for each possible
     char attribute0Name[BUFFER_SIZE];  // attribute name and it's data
     char attribute0Data[BUFFER_SIZE];
