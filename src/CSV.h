@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "3DMath.h"
+#include "Raytrace.h"
 #include "CSV.c"
 
 Entity* process_csv(FILE *file);  // Process a full CSV file
