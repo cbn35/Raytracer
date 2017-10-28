@@ -1,6 +1,6 @@
 # Flags
 CC = gcc
-ARGS = -Wall -Wextra -O3 -lm -o raytrace
+ARGS = -Wall -Wextra -O3 -lm -o raycast
 SOURCE = src/Main.c
 
 all: compile
