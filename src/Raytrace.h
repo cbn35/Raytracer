@@ -9,7 +9,6 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "Raytrace.c"
 
 // Struct for holding color RGB values
 typedef struct {
@@ -51,4 +50,5 @@ Vector vector_sub(Vector a, Vector b);                                          
 double* check_intersect(Ray v, Entity entity);                                       // Check ray intersect
 Color shoot(Ray v, Entity *entities, Color backgrounf, int entitiesLen, int phong);  // Shoot ray into scene of entities
 
+#include "Raytrace.c"
 #endif
