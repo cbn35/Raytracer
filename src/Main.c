@@ -61,6 +61,7 @@ int main(int argc, char **argv) {
             write_pixel((int) (color.r * 255.00), (int) (color.g * 255.00), (int) (color.b * 255.00), out);
         } 
     }
+    free(entities);
     return 0;
 
 }
