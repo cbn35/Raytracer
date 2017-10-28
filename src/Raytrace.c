@@ -106,3 +106,33 @@ double* check_intersect(Ray v, Entity entity) {
     }
 }
 
+Color shoot(Ray v, Entity *entities, Color background, int entitiesLen, int phong) {
+    /* Calculate the color of a returning ray
+     * r (Ray)            : ray to check
+     * entities (Entity *): array of entities in the scene
+     * entitiesLen (int)  : length of the array of entities
+     * phong (int)        : flag for use of phong model (True = 1)
+     */
+    Color pixColor = background;
+    double t = INFINITY;
+
+    for(int i = 0; i < entitiesLen; i++) {
+        double *intersect = check_intersect(v, entities[i]);
+    
+        if(intersect == NULL) continue;
+
+        if(phong != 1 && intersect[3] < t) {
+            t = intersect[3];
+            pixColor = entities[i].color;
+            //printf("%f\n", t);
+        } else if(phong == 1 && intersect[3] < t) {
+            // Calculate color based on Phong shading model
+            // Use recursion and shit.
+        }
+    }
+
+    return pixColor;
+}
+
+
+
