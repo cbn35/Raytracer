@@ -124,7 +124,6 @@ Color shoot(Ray v, Entity *entities, Color background, int entitiesLen, int phon
         if(phong != 1 && intersect[3] < t) {
             t = intersect[3];
             pixColor = entities[i].color;
-            //printf("%f\n", t);
         } else if(phong == 1 && intersect[3] < t) {
             // Calculate color based on Phong shading model
             // Use recursion and shit.
