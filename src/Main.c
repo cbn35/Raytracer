@@ -11,16 +11,26 @@
 
 int main(int argc, char **argv) {
     // Check the program arguments
-    if(argc != 5) return 1; 
-    
-    if(atoi(argv[1]) <= 0 || atoi(argv[2]) <= 0) return 1;
-    
+    if(argc != 5) {
+        fprintf(stderr, "ERROR: invalid number of arguments\n");
+        return 1;
+    }
+
+    if(atoi(argv[1]) <= 0 || atoi(argv[2]) <= 0) {
+        fprintf(stderr, "ERROR: invalid width and height arguments\n");
+        return 1;
+    }
+
     FILE *test = fopen(argv[3], "r");
-    if(test == NULL) return 1;
+    if(test == NULL) {
+        fprintf(stderr, "ERROR: config file could not be opeed\n");
+        return 1;
+    }
     else fclose(test);
-    
+
     test = fopen(argv[4], "r");
     if(test != NULL) {
+        fprintf(stderr, "ERROR: output file already exists\n");
         fclose(test);
         return 1;
     }
