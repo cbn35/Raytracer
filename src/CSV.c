@@ -145,3 +145,28 @@ Entity parse_line(char *line) {
     return entity;
 
 }
+
+Entity* process_csv(FILE *file) {
+    /* Process a whole CSV file.
+     * Args:
+     *      file (FILE*): File pointer to parse
+     * Returns (Entity*): Pointer to array of entities parsed from the object.
+     *                    Array will always be 255 long, end of array can be
+     *                    found by the first object with an id of -1.  
+     */
+    char *line = malloc(sizeof(char) * BUFFER_SIZE);
+    Entity *entities = malloc(sizeof(Entity) * 255);
+
+    // Initialize each element to an impossible ID, so we will be able to know where the end of the list is easily
+    for(int i = 0; i < 255; i++) entities[i].id = -1;
+
+    rewind(file);  // Make sure the file pointer is in the right position
+
+    // Read from the file line by line, appendeing newly parsed elements to entities*
+    int numParsed = 0;
+    while(numParsed < 255 && fgets(line, BUFFER_SIZE, file) != NULL) {
+        entities[numParsed++] = parse_line(line);
+    }
+
+    return entities;
+}
