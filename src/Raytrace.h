@@ -47,7 +47,7 @@ typedef struct {
     union {
         Color color;      // For lights
         Color colors[2];  // For objects [diffuseLight, specularLight]
-    }
+    } ColorProperties;
 } Entity;
 
 double dot_product(Vector a, Vector b);                                              // Vector dot product
