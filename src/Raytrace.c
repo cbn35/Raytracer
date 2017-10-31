@@ -33,6 +33,8 @@ double* check_intersect(Ray v, Entity entity) {
      * Args:
      *      v (Ray): Ray to check for intersects
      *      entity (Entity): Entity to check for intersect
+     * Returns (double*): 4-long double array of the structure [x, y, z, t] if
+     *                    there is an intersect, otherwise a NULL pointer.
      */
     if(entity.id == 1) {  // Check intersect with sphere
         /* Ray Sphere Intersect:
