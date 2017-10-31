@@ -39,10 +39,15 @@ typedef struct {
     union {
         Vector normal;          // For planes
         double radius;          // For spheres
-        double dimensions[2];   // For cameras
+        double dimensions[2];   // For cameras [width, height]
+        double radials[4];      // For lights  [theta, radialA0, radialA1, radialA2]
     } attributes;
 
-    Color color;  // Color of the object
+    // Color attributes for each type of entity. Unioned to save space
+    union {
+        Color color;      // For lights
+        Color colors[2];  // For objects [diffuseLight, specularLight]
+    }
 } Entity;
 
 double dot_product(Vector a, Vector b);                                              // Vector dot product
