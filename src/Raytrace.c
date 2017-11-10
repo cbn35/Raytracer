@@ -117,20 +117,51 @@ Color shoot(Ray v, Entity *entities, Color background, int entitiesLen, int phon
      */
     Color pixColor = background;
     double t = INFINITY;
+    double *intersect;
+    Entity intersectedEntity;
 
-    for(int i = 0; i < entitiesLen; i++) {
-        double *intersect = check_intersect(v, entities[i]);
+    // Compute attenuation factors for lights
+    if(phong == 1) {
+        for(int i = 0; i < entitiesLen; i++) {
+            intersect = check_intersect(v, entities[i]);
     
-        if(intersect == NULL) continue;
+            if(intersect == NULL) continue;
 
-        if(phong != 1 && intersect[3] < t) {
-            t = intersect[3];
-            pixColor = entities[i].color;
-            free(intersect);
-        } else if(phong == 1 && intersect[3] < t) {
-            // Calculate color based on Phong shading model
-            // Use recursion and shit.
+            if(intersect[3] < t) {
+                t = intersect[3];
+                free(intersect);
+                intersectedEntity = entities[i];
+            } 
         }
+
+        // Loop through the lights in the scene and calculate attenuation factors
+        for(int i = 0; i < entitiesLen; i++) {
+            if(entities[i].id != 3) continue;  // Skip non-light entities
+
+            double fAng, fRad;
+            double theta = entities[i].attributes.radials[0];
+            double a0 = entities[i].attributes.radials[1];
+            double a1 = entities[i].attributes.radials[2];
+            double a2 = entities[i].attributes.radials[3];
+
+            // Find the angular attenuation
+            fAng = angular_attenuation(theta, entities[i].x, entities[i].y,
+                                       entities[i].z, entities[i].direction,
+                                       intersect[0], intersect[1], intersect[2]);
+
+            // Find the radial attenuation
+            fRad = radial_attenuation(entities[i].x, entities[i].y, entities[i].z,
+                                      intersect[0], intersect[1], intersect[2],
+                                      a0, a1, a2);
+
+            pixColor.r += fRad * fAng * (fRad + fAng);
+            pixColor.g += fRad * fAng * (fRad + fAng);
+            pixColor.b += fRad * fAng * (fRad + fAng);
+        }
+
+        // Add ambient and emitted light
+        pixColor += ambient;
+        pixColor += emitted
     }
 
     return pixColor;
