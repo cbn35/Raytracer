@@ -108,12 +108,13 @@ double* check_intersect(Ray v, Entity entity) {
     }
 }
 
-double angular_attenuation(double theta, Vector light, Vector intersect) {
+double angular_attenuation(double theta, double angularA0, Vector direction,
+                           Vector lightToIntersect) {
     if(theta == 0) return 1.0;
 
-    double attenuation = vector_dot(intersect, light);
+    double attenuation = vector_dot(direction, lightToIntersect);
     if(abs(attenuation) > theta) return 0;
-    else return pow(attenuation, FRAD_FACTOR);
+    else return pow(attenuation, angularA0);
 }
 
 double radial_attenuation(Vector light, Vector intersect, a0, a1, a2) {
@@ -197,16 +198,25 @@ Color shoot(Ray v, Entity *entities, Color background, int entitiesLen, int phon
             double a0 = entities[i].attributes.radials[1];
             double a1 = entities[i].attributes.radials[2];
             double a2 = entities[i].attributes.radials[3];
+            Vector light;
+            light.x = entities[i].x;
+            light.y = entities[i].y;
+            light.z = entities[i].z;
+            Vector intersectPoint;
+            intersectPoint.x = intersect[0];
+            intersectPoint.y = intersect[1];
+            intersectPoint.z = intersect[2];
 
             // Find the angular attenuation
-            fAng = angular_attenuation(theta, entities[i].x, entities[i].y,
-                                       entities[i].z, entities[i].direction,
-                                       intersect[0], intersect[1], intersect[2]);
+            Vector lightToPoint;
+            lightToPoint.x = light.x - intersectPoint.x;
+            lightToPoint.y = light.y - intersectPoint.y;
+            lightToPoint.z = light.z - intersectPoint.z;
+            fAng = angular_attenuation(theta, entities[i].angularA0,
+                                       entities[i].direction, lightToPoint);
 
             // Find the radial attenuation
-            fRad = radial_attenuation(entities[i].x, entities[i].y, entities[i].z,
-                                      intersect[0], intersect[1], intersect[2],
-                                      a0, a1, a2);
+            fRad = radial_attenuation(light, intersect, a0, a1, a2);
 
             pixColor.r += fRad * fAng * (fRad + fAng);
             pixColor.g += fRad * fAng * (fRad + fAng);
