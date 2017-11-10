@@ -7,6 +7,8 @@
 #ifndef H_RAYTRACERMATH
 #define H_RAYTRACERMATH
 
+#define FRAD_FACTOR 2
+
 #include <stdlib.h>
 #include <math.h>
 
