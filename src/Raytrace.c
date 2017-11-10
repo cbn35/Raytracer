@@ -108,6 +108,14 @@ double* check_intersect(Ray v, Entity entity) {
     }
 }
 
+double angular_attenuation(double theta, Vector light, Vector intersect) {
+    if(theta == 0) return 1.0;
+
+    double attenuation = vector_dot(intersect, light);
+    if(abs(attenuation) > theta) return 0;
+    else return pow(attenuation, FRAD_FACTOR);
+}
+
 Color shoot(Ray v, Entity *entities, Color background, int entitiesLen, int phong) {
     /* Calculate the color of a returning ray
      * r (Ray)            : ray to check
@@ -136,7 +144,7 @@ Color shoot(Ray v, Entity *entities, Color background, int entitiesLen, int phon
 
         pixColor.r = intersectedEntity.color.r;
         pixColor.g = intersectedEntity.color.g;
-        pixColor.b = intersectedEntity.colot.b;
+        pixColor.b = intersectedEntity.color.b;
     }
 
     // Compute attenuation factors for lights and use the Illumination model
@@ -157,6 +165,25 @@ Color shoot(Ray v, Entity *entities, Color background, int entitiesLen, int phon
         for(int i = 0; i < entitiesLen; i++) {
             if(entities[i].id != 3) continue;  // Skip non-light entities
 
+            // build a ray between the intersect and the light
+            Ray ray;
+            ray.x0 = intersect[0];
+            ray.y0 = intersect[1];
+            ray.z0 = intersect[2];
+            ray.x1 = entities[i].x;
+            ray.y1 = entities[i].y;
+            ray.z1 = entities[i].z;
+            
+            // check if the light is behind any objects
+            double *rayIntersect;
+            for(int j = 0; j < entitiesLen; j++) {
+                rayIntersect = check_intersect(ray, entities[i]);
+                if(rayIntersect != NULL) break;
+            }
+
+            if(rayIntersect != NULL) continue;
+
+            // Declare fAng, fRad, theta, and a0-a2
             double fAng, fRad;
             double theta = entities[i].attributes.radials[0];
             double a0 = entities[i].attributes.radials[1];
@@ -186,5 +213,6 @@ Color shoot(Ray v, Entity *entities, Color background, int entitiesLen, int phon
     return pixColor;
 }
 
-
-
+double radial_attenuation(Vector light, Vector intersect, a0, a1, a2) {
+    double distance = sqrt(pow() + pow() + pow());
+}
