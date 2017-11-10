@@ -120,7 +120,26 @@ Color shoot(Ray v, Entity *entities, Color background, int entitiesLen, int phon
     double *intersect;
     Entity intersectedEntity;
 
-    // Compute attenuation factors for lights
+    // When not called to use phong shading, simply check for intersections
+    if(phong != 1) {
+        for(int i = 0; i < entitiesLen; i++) {
+            intersect = check_intersect(v, entities[i]);
+    
+            if(intersect == NULL) continue;
+
+            if(intersect[3] < t) {
+                t = intersect[3];
+                free(intersect);
+                intersectedEntity = entities[i];
+            } 
+        }
+
+        pixColor.r = intersectedEntity.color.r;
+        pixColor.g = intersectedEntity.color.g;
+        pixColor.b = intersectedEntity.colot.b;
+    }
+
+    // Compute attenuation factors for lights and use the Illumination model
     if(phong == 1) {
         for(int i = 0; i < entitiesLen; i++) {
             intersect = check_intersect(v, entities[i]);
