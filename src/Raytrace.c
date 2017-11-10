@@ -116,6 +116,14 @@ double angular_attenuation(double theta, Vector light, Vector intersect) {
     else return pow(attenuation, FRAD_FACTOR);
 }
 
+double radial_attenuation(Vector light, Vector intersect, a0, a1, a2) {
+    double distance = sqrt(pow(light.x - intersect.x, 2) +
+                           pow(light.y - intersect.y, 2) +
+                           pow(ligt.z - intersect.z, 2));
+
+    return 1 / (a2 * pow(distance, 2) + a1 * pow(distance, 2). a1);
+}
+
 Color shoot(Ray v, Entity *entities, Color background, int entitiesLen, int phong) {
     /* Calculate the color of a returning ray
      * r (Ray)            : ray to check
@@ -211,8 +219,4 @@ Color shoot(Ray v, Entity *entities, Color background, int entitiesLen, int phon
     }
 
     return pixColor;
-}
-
-double radial_attenuation(Vector light, Vector intersect, a0, a1, a2) {
-    double distance = sqrt(pow() + pow() + pow());
 }
