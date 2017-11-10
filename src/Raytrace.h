@@ -7,8 +7,6 @@
 #ifndef H_RAYTRACERMATH
 #define H_RAYTRACERMATH
 
-#define FRAD_FACTOR 2
-
 #include <stdlib.h>
 #include <math.h>
 
@@ -46,6 +44,7 @@ typedef struct {
     } attributes;
 
     Vector direction;  // For use with spotlights
+    double angularA0;
 
     // Color attributes for each type of entity. Unioned to save space
     union {
