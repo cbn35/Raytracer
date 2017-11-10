@@ -43,6 +43,8 @@ typedef struct {
         double radials[4];      // For lights  [theta, radialA0, radialA1, radialA2]
     } attributes;
 
+    Vector direction;  // For use with spotlights
+
     // Color attributes for each type of entity. Unioned to save space
     union {
         Color color;      // For lights
