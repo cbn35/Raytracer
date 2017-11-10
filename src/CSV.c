@@ -17,6 +17,10 @@ Entity parse_line(char *line) {
     char attribute1Data[BUFFER_SIZE];
     char attribute2Name[BUFFER_SIZE];
     char attribute2Data[BUFFER_SIZE];
+    char attribute3Name[BUFFER_SIZE];
+    char attribute3Data[BUFFER_SIZE];
+    char attribute4Name[BUFFER_SIZE];
+    char attribute4Data[BUFFER_SIZE];
 
     Entity entity;                      // Initialize the returning entity
     
@@ -54,9 +58,9 @@ Entity parse_line(char *line) {
         entity.id = 1;
 
         // Parse through the line, with expected structure:
-        //      "[type], [attr0]: [[data0]], [attr1]: [[data1]], [attr2]: [data2]"
-        sscanf(line, "%*[^,] %*[^ ] %[^:] %*[^ ] [%[^]] %*[^ ] %[^:] %*[^ ] [%[^]] %*[^ ] %[^:] %*[^ ] %[^\n]",
-                     attribute0Name, attribute0Data, attribute1Name, attribute1Data, attribute2Name, attribute2Data);
+        //      "[type], [attr0]: [data0], [attr1]: [[data1]], [attr2]: [[data2]], [attr3]: [[data3]]"
+        sscanf(line, "%*[^,] %*[^ ] %[^:] %*[^ ] %[^,] %*[^ ] %[^:] %*[^ ] [%[^]] %*[^ ] %[^:] %*[^ ] [%[^]] %*[^ ] %[^:] %*[^ ] [%[^]]",
+                     attribute0Name, attribute0Data, attribute1Name, attribute1Data, attribute2Name, attribute2Data, attribute3Name, attribute3Data);
 
         // If attribute0Name is "radius", set the sphere radius
         if(strcmp(attribute0Name, "radius") == 0) {
@@ -65,10 +69,14 @@ Entity parse_line(char *line) {
         } else if(strcmp(attribute0Name, "position") == 0) {
             sscanf(attribute0Data, "%lf, %lf, %lf", &entity.x, &entity.y, &entity.z);
         // Otherwise attempt parsing of "color"
-        } else if(strcmp(attribute0Name, "color") == 0) {
-            sscanf(attribute0Data, "%lf, %lf, %lf", &entity.color.r,
-                                                    &entity.color.g,
-                                                    &entity.color.b);
+        } else if(strcmp(attribute0Name, "diffuse_color") == 0) {
+            sscanf(attribute0Data, "%lf, %lf, %lf", &entity.ColorProperties.colors[0].r,
+                                                    &entity.ColorProperties.colors[0].g,
+                                                    &entity.ColorProperties.colors[0].b);
+        } else if(strcmp(attribute0Name, "specular_color") == 0) {
+            sscanf(attribute0Data, "%lf, %lf, %lf", &entity.ColorProperties.colors[1].r,
+                                                    &entity.ColorProperties.colors[1].g,
+                                                    &entity.ColorProperties.colors[1].b);
         }
 
         // Do the same deal for attribute1Name/Data
@@ -76,10 +84,14 @@ Entity parse_line(char *line) {
             entity.attributes.radius = atof(attribute1Data);
         } else if(strcmp(attribute1Name, "position") == 0) {
             sscanf(attribute1Data, "%lf, %lf, %lf", &entity.x, &entity.y, &entity.z); 
-        } else if(strcmp(attribute1Name, "color") == 0) {
-            sscanf(attribute1Data, "%lf, %lf, %lf", &entity.color.r,
-                                                    &entity.color.g,
-                                                    &entity.color.b);
+        } else if(strcmp(attribute1Name, "diffuse_color") == 0) {
+            sscanf(attribute1Data, "%lf, %lf, %lf", &entity.ColorProperties.colors[0].r,
+                                                    &entity.ColorProperties.colors[0].g,
+                                                    &entity.ColorProperties.colors[0].b);
+        } else if(strcmp(attribute1Name, "specular_color") == 0) {
+            sscanf(attribute1Data, "%lf, %lf, %lf", &entity.ColorProperties.colors[1].r,
+                                                    &entity.ColorProperties.colors[1].g,
+                                                    &entity.ColorProperties.colors[1].b);
         }
 
         // Do the same deal for attribute2Name/Data
@@ -87,10 +99,29 @@ Entity parse_line(char *line) {
             entity.attributes.radius = atof(attribute2Data);
         } else if(strcmp(attribute2Name, "position") == 0) {
             sscanf(attribute2Data, "%lf, %lf, %lf", &entity.x, &entity.y, &entity.z);
-        } else if(strcmp(attribute2Name, "color") == 0) {
-            sscanf(attribute2Data, "%lf, %lf, %lf", &entity.color.r,
-                                                    &entity.color.g,
-                                                    &entity.color.b);
+        } else if(strcmp(attribute2Name, "diffuse_color") == 0) {
+            sscanf(attribute2Data, "%lf, %lf, %lf", &entity.ColorProperties.colors[0].r,
+                                                    &entity.ColorProperties.colors[0].g,
+                                                    &entity.ColorProperties.colors[0].b);
+        } else if(strcmp(attribute2Name, "specular_color") == 0) {
+            sscanf(attribute2Data, "%lf, %lf, %lf", &entity.ColorProperties.colors[1].r,
+                                                    &entity.ColorProperties.colors[1].g,
+                                                    &entity.ColorProperties.colors[1].b);
+        }
+
+        // Do the same deal for attribute2Name/Data
+        if(strcmp(attribute3Name, "radius") == 0) {
+            entity.attributes.radius = atof(attribute3Data);
+        } else if(strcmp(attribute3Name, "position") == 0) {
+            sscanf(attribute3Data, "%lf, %lf, %lf", &entity.x, &entity.y, &entity.z);
+        } else if(strcmp(attribute3Name, "diffuse_color") == 0) {
+            sscanf(attribute3Data, "%lf, %lf, %lf", &entity.ColorProperties.colors[0].r,
+                                                    &entity.ColorProperties.colors[0].g,
+                                                    &entity.ColorProperties.colors[0].b);
+        } else if(strcmp(attribute3Name, "specular_color") == 0) {
+            sscanf(attribute3Data, "%lf, %lf, %lf", &entity.ColorProperties.colors[1].r,
+                                                    &entity.ColorProperties.colors[1].g,
+                                                    &entity.ColorProperties.colors[1].b);
         }
     // Parse through the expected structure of a Plane
     } else if(strcmp(entityType, "plane") == 0) {
@@ -98,8 +129,8 @@ Entity parse_line(char *line) {
 
         // Parse through the line, with expected structure:
         //      "[type], [attr0]: [[data0]], [attr1]: [[data1]], [attr2]: [[data2]]"
-        sscanf(line, "%*[^,] %*[^ ] %[^:] %*[^ ] [%[^]] %*[^ ] %[^:] %*[^ ] [%[^]] %*[^ ] %[^:] %*[^ ] [%[^]]",
-                     attribute0Name, attribute0Data, attribute1Name, attribute1Data, attribute2Name, attribute2Data);
+        sscanf(line, "%*[^,] %*[^ ] %[^:] %*[^ ] [%[^]] %*[^ ] %[^:] %*[^ ] [%[^]] %*[^ ] %[^:] %*[^ ] [%[^]] %*[^ ] %[^:] %*[^ ] [%[^]]",
+                     attribute0Name, attribute0Data, attribute1Name, attribute1Data, attribute2Name, attribute2Data, attribute3Name, attribute3Data);
 
         // If attribute0Name is "normal", set the normal vector
         if(strcmp(attribute0Name, "normal") == 0) {
@@ -110,10 +141,14 @@ Entity parse_line(char *line) {
         } else if(strcmp(attribute0Name, "position") == 0) {
             sscanf(attribute0Data, "%lf, %lf, %lf", &entity.x, &entity.y, &entity.z);
         // Otherwise, set the color
-        } else if(strcmp(attribute0Name, "color") == 0) {
-            sscanf(attribute0Data, "%lf, %lf, %lf", &entity.color.r,
-                                                    &entity.color.g,
-                                                    &entity.color.b);
+        } else if(strcmp(attribute0Name, "diffuse_color") == 0) {
+            sscanf(attribute0Data, "%lf, %lf, %lf", &entity.ColorProperties.colors[0].r,
+                                                    &entity.ColorProperties.colors[0].g,
+                                                    &entity.ColorProperties.colors[0].b);
+        } else if(strcmp(attribute0Name, "specular_color") == 0) {
+            sscanf(attribute0Data, "%lf, %lf, %lf", &entity.ColorProperties.colors[1].r,
+                                                    &entity.ColorProperties.colors[1].g,
+                                                    &entity.ColorProperties.colors[1].b);
         }
 
         // Do the same deal for attribute1Name/Data
@@ -123,10 +158,14 @@ Entity parse_line(char *line) {
                                                     &entity.attributes.normal.z);
         } else if(strcmp(attribute1Name, "position") == 0) {
             sscanf(attribute1Data, "%lf, %lf, %lf", &entity.x, &entity.y, &entity.z);
-        } else if(strcmp(attribute1Name, "color") == 0) {
-            sscanf(attribute1Data, "%lf, %lf, %lf", &entity.color.r,
-                                                    &entity.color.g,
-                                                    &entity.color.b);
+        } else if(strcmp(attribute1Name, "diffuse_color") == 0) {
+            sscanf(attribute1Data, "%lf, %lf, %lf", &entity.ColorProperties.colors[0].r,
+                                                    &entity.ColorProperties.colors[0].g,
+                                                    &entity.ColorProperties.colors[0].b);
+        } else if(strcmp(attribute1Name, "specular_color") == 0) {
+            sscanf(attribute1Data, "%lf, %lf, %lf", &entity.ColorProperties.colors[1].r,
+                                                    &entity.ColorProperties.colors[1].g,
+                                                    &entity.ColorProperties.colors[1].b);
         }
 
         // Do the same deal for attribute2Name/Data
@@ -136,11 +175,89 @@ Entity parse_line(char *line) {
                                                     &entity.attributes.normal.z);
         } else if(strcmp(attribute2Name, "position") == 0) {
             sscanf(attribute2Data, "%lf, %lf, %lf", &entity.x, &entity.y, &entity.z);
-        } else if(strcmp(attribute2Name, "color") == 0) {
-            sscanf(attribute2Data, "%lf, %lf, %lf", &entity.color.r,
-                                                    &entity.color.g,
-                                                    &entity.color.b);
-        } 
+        } else if(strcmp(attribute2Name, "diffuse_color") == 0) {
+            sscanf(attribute2Data, "%lf, %lf, %lf", &entity.ColorProperties.colors[0].r,
+                                                    &entity.ColorProperties.colors[0].g,
+                                                    &entity.ColorProperties.colors[0].b);
+        } else if(strcmp(attribute2Name, "specular_color") == 0) {
+            sscanf(attribute2Data, "%lf, %lf, %lf", &entity.ColorProperties.colors[1].r,
+                                                    &entity.ColorProperties.colors[1].g,
+                                                    &entity.ColorProperties.colors[1].b);
+        }
+
+        // Do the same deal for attribute3Name/Data
+        if(strcmp(attribute3Name, "normal") == 0) {
+            sscanf(attribute3Data, "%lf, %lf, %lf", &entity.attributes.normal.x, 
+                                                    &entity.attributes.normal.y,
+                                                    &entity.attributes.normal.z);
+        } else if(strcmp(attribute3Name, "position") == 0) {
+            sscanf(attribute3Data, "%lf, %lf, %lf", &entity.x, &entity.y, &entity.z);
+        } else if(strcmp(attribute3Name, "diffuse_color") == 0) {
+            sscanf(attribute3Data, "%lf, %lf, %lf", &entity.ColorProperties.colors[0].r,
+                                                    &entity.ColorProperties.colors[0].g,
+                                                    &entity.ColorProperties.colors[0].b);
+        } else if(strcmp(attribute3Name, "specular_color") == 0) {
+            sscanf(attribute3Data, "%lf, %lf, %lf", &entity.ColorProperties.colors[1].r,
+                                                    &entity.ColorProperties.colors[1].g,
+                                                    &entity.ColorProperties.colors[1].b);
+        }
+    } else if(strcmp(entityType, "light") == 0) {
+        entity.id = 3;
+
+        // Parse through the line, with expected structure:
+        //      "[type], [attr0]: [data0], [attr1]: [data1], [attr2]: [data2], [attr3]: [[data3]], [attr4]: [[data4]]"
+        sscanf(line, "%*[^,] %*[^ ] %[^:] %*[^ ] %[^,] %*[^ ] %[^:] %*[^ ] %[^,] %*[^ ] %[^:] %*[^ ] %[^,] %*[^ ] %[^:] %*[^ ] [%[^]] %*[^ ] %[^:] %*[^ ] [%[^]]",
+                     attribute0Name, attribute0Data, attribute1Name, attribute1Data, attribute2Name, attribute2Data, attribute3Name, attribute3Data, attribute4Name, attribute4Data);
+        
+        if(strcmp(attribute0Name, "theta") == 0) {
+            entity.attributes.radials[0] = atof(attribute0Data);            
+        } else if(strcmp(attribute0Name, "radial-a0") == 0) {
+            entity.attributes.radials[1] = atof(attribute0Data);
+        } else if(strcmp(attribute0Name, "radial-a1") == 0) {
+            entity.attributes.radials[2] = atof(attribute0Data); 
+        } else if(strcmp(attribute0Name, "radial-a2") == 0) {
+            entity.attributes.radials[3] = atof(attribute0Data);
+        }
+
+        if(strcmp(attribute1Name, "theta") == 0) {
+            entity.attributes.radials[0] = atof(attribute1Data);            
+        } else if(strcmp(attribute1Name, "radial-a0") == 0) {
+            entity.attributes.radials[1] = atof(attribute1Data);
+        } else if(strcmp(attribute1Name, "radial-a1") == 0) {
+            entity.attributes.radials[2] = atof(attribute1Data); 
+        } else if(strcmp(attribute1Name, "radial-a2") == 0) {
+            entity.attributes.radials[3] = atof(attribute1Data);
+        }
+
+        if(strcmp(attribute2Name, "theta") == 0) {
+            entity.attributes.radials[0] = atof(attribute2Data);            
+        } else if(strcmp(attribute2Name, "radial-a0") == 0) {
+            entity.attributes.radials[1] = atof(attribute2Data);
+        } else if(strcmp(attribute2Name, "radial-a1") == 0) {
+            entity.attributes.radials[2] = atof(attribute2Data); 
+        } else if(strcmp(attribute2Name, "radial-a2") == 0) {
+            entity.attributes.radials[3] = atof(attribute2Data);
+        }
+
+        if(strcmp(attribute3Name, "color") == 0) {
+            sscanf(attribute3Data, "%lf, %lf, %lf", &entity.ColorProperties.color.r,
+                                                    &entity.ColorProperties.color.g,
+                                                    &entity.ColorProperties.color.b);
+        } else if(strcmp(attribute3Name, "position") == 0){
+            sscanf(attribute3Data, "%lf, %lf, %lf", &entity.x,
+                                                    &entity.y,
+                                                    &entity.z);
+        }
+ 
+        if(strcmp(attribute4Name, "color") == 0) {
+            sscanf(attribute4Data, "%lf, %lf, %lf", &entity.ColorProperties.color.r,
+                                                    &entity.ColorProperties.color.g,
+                                                    &entity.ColorProperties.color.b);
+        } else if(strcmp(attribute4Name, "position") == 0){
+            sscanf(attribute4Data, "%lf, %lf, %lf", &entity.x,
+                                                    &entity.y,
+                                                    &entity.z);
+        }   
     }
     return entity;
 

@@ -112,17 +112,17 @@ double angular_attenuation(double theta, double angularA0, Vector direction,
                            Vector lightToIntersect) {
     if(theta == 0) return 1.0;
 
-    double attenuation = vector_dot(direction, lightToIntersect);
+    double attenuation = dot_product(direction, lightToIntersect);
     if(abs(attenuation) > theta) return 0;
     else return pow(attenuation, angularA0);
 }
 
-double radial_attenuation(Vector light, Vector intersect, a0, a1, a2) {
+double radial_attenuation(Vector light, Vector intersect, double a0, double a1, double a2) {
     double distance = sqrt(pow(light.x - intersect.x, 2) +
                            pow(light.y - intersect.y, 2) +
-                           pow(ligt.z - intersect.z, 2));
+                           pow(light.z - intersect.z, 2));
 
-    return 1 / (a2 * pow(distance, 2) + a1 * pow(distance, 2). a1);
+    return 1 / (a2 * pow(distance, 2) + a1 * pow(distance, 2) + a0);
 }
 
 Color shoot(Ray v, Entity *entities, Color background, int entitiesLen, int phong) {
@@ -137,25 +137,6 @@ Color shoot(Ray v, Entity *entities, Color background, int entitiesLen, int phon
     double *intersect;
     Entity intersectedEntity;
 
-    // When not called to use phong shading, simply check for intersections
-    if(phong != 1) {
-        for(int i = 0; i < entitiesLen; i++) {
-            intersect = check_intersect(v, entities[i]);
-    
-            if(intersect == NULL) continue;
-
-            if(intersect[3] < t) {
-                t = intersect[3];
-                free(intersect);
-                intersectedEntity = entities[i];
-            } 
-        }
-
-        pixColor.r = intersectedEntity.color.r;
-        pixColor.g = intersectedEntity.color.g;
-        pixColor.b = intersectedEntity.color.b;
-    }
-
     // Compute attenuation factors for lights and use the Illumination model
     if(phong == 1) {
         for(int i = 0; i < entitiesLen; i++) {
@@ -169,6 +150,8 @@ Color shoot(Ray v, Entity *entities, Color background, int entitiesLen, int phon
                 intersectedEntity = entities[i];
             } 
         }
+
+        if(intersect == NULL) return pixColor;
 
         // Loop through the lights in the scene and calculate attenuation factors
         for(int i = 0; i < entitiesLen; i++) {
@@ -216,16 +199,20 @@ Color shoot(Ray v, Entity *entities, Color background, int entitiesLen, int phon
                                        entities[i].direction, lightToPoint);
 
             // Find the radial attenuation
-            fRad = radial_attenuation(light, intersect, a0, a1, a2);
+            fRad = radial_attenuation(light, intersectPoint, a0, a1, a2);
 
-            pixColor.r += fRad * fAng * (fRad + fAng);
-            pixColor.g += fRad * fAng * (fRad + fAng);
-            pixColor.b += fRad * fAng * (fRad + fAng);
+            pixColor.r += fRad * fAng;
+            pixColor.g += fRad * fAng;
+            pixColor.b += fRad * fAng;
         }
 
         // Add ambient and emitted light
-        pixColor += ambient;
-        pixColor += emitted
+        pixColor.r += intersectedEntity.ColorProperties.colors[0].r;
+        pixColor.r += intersectedEntity.ColorProperties.colors[1].r;
+        pixColor.g += intersectedEntity.ColorProperties.colors[0].g;
+        pixColor.g += intersectedEntity.ColorProperties.colors[1].g;
+        pixColor.b += intersectedEntity.ColorProperties.colors[0].b;
+        pixColor.b += intersectedEntity.ColorProperties.colors[1].b;
     }
 
     return pixColor;

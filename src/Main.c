@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
             view.y1 = view.y0 + (screenHeight / 2) - ((screenHeight / height) * row); 
             view.z1 = -1;
 
-            Color color = shoot(view, entities, background, numEntities, 0);
+            Color color = shoot(view, entities, background, numEntities, 1);
             write_pixel((int) (color.r * 255.00), (int) (color.g * 255.00), (int) (color.b * 255.00), out);
         } 
     }
